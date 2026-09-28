@@ -1,0 +1,30 @@
+# Agent Manifest — AgentRegistry entry point
+# AgentRegistry reads every key below at ROOT level — do NOT nest keys under an
+# `agent:` block (that shape is invisible to the registry: namespace/enabled fall
+# back to defaults and name/version never resolve).
+id: "ENE-C2-086"
+name: "EnergyMethaneObservationContextBriefGenerator"
+namespace: "ene-c2-086"
+version: "0.1.0"
+enabled: true
+category: "Cat 2"
+industry: "ENE"
+
+# Level 2 base agent type
+base_type: "Other"  # L1-direct AgentBaseGraph (DocGenerationAgent-pattern; no L2 inheritance)
+
+# Entry point — single dotted import path (module.Class). AgentRegistry does
+# manifest["class"].rsplit(".", 1) to get (module, class_name).
+class: "src.graph.graph.EnergyMethaneObservationContextBriefGraph"
+
+# Security
+required_trust_level: "VERIFIED_EXTERNAL"
+
+# Compile-time gates — declare every secret/extra actually used. The core path is
+# deterministic: no ctx.secrets.require() call and no LLM client construction in src/.
+requires:
+  secrets: []
+  extras: []
+
+# Runtime parameters (max_retry, timeout_seconds, ...) live in config/config.yaml,
+# which AgentRegistry loads separately and passes as Graph(config=...).
